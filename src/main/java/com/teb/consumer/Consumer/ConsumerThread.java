@@ -1,7 +1,7 @@
 package com.teb.consumer.Consumer;
 
 import com.teb.consumer.Interfaces.IKafkaConstants;
-import com.teb.consumer.MongoDbMain;
+import com.teb.consumer.MongoStarter;
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.errors.WakeupException;
 import org.apache.kafka.common.serialization.LongDeserializer;
@@ -45,8 +45,9 @@ public class ConsumerThread implements Runnable {
                         continue;
                 }
                 consumerRecords.forEach(record -> {
-                    MongoDbMain mongo = new MongoDbMain();
+                    MongoStarter mongo = new MongoStarter();
                     mongo.save(record.value());
+
                 });
                 // commits the offset of record to broker.
             }

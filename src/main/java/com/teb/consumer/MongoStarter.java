@@ -7,13 +7,12 @@ import com.mongodb.MongoClient;
 import com.mongodb.util.JSON;
 import com.teb.consumer.Interfaces.IMongoDbConstants;
 
-public class MongoDbMain {
+public class MongoStarter {
 
     private DB getConnection() {
         try {
 
             MongoClient mongoClient = new MongoClient(IMongoDbConstants.MONGODB_HOST, IMongoDbConstants.MONGODB_PORT);
-            //---------- Creating DataBase ---------------------------//
             DB db = mongoClient.getDB(IMongoDbConstants.DB_NAME);
 //            boolean auth = db.authenticate(IMongoDbConstants.USERNAME,IMongoDbConstants.PASSWORD.toCharArray());
 
