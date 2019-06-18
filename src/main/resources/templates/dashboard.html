@@ -1,0 +1,177 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+    <script type="text/javascript">
+
+        window.onload = function () {
+            var istanbulLineLogs = [];
+            var moscowLineLogs = [];
+            var tokyoLineLogs = [];
+            var londonLineLogs = [];
+            var beijingLineLogs = [];
+            var updateInterval = 10000; // chart updates every minute
+
+            var istanbulLogSize = 0;
+            var moscowLogSize = 0;
+            var londonLogSize = 0;
+            var tokyoLogSize = 0;
+            var beijingLogSize = 0;
+
+            function toggleDataSeries(e) {
+                if (typeof (e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                    e.dataSeries.visible = false;
+                } else {
+                    e.dataSeries.visible = true;
+                }
+                chart.render();
+            }
+
+            var chart = new CanvasJS.Chart("chartContainer", {
+                zoomEnabled: true,
+                theme: "light2",
+
+                title: {
+                    text: "Turkish Economy Bank Log Chart"
+                },
+                axisX: {
+                    title: "chart updates every minute",
+                },
+                axisY: {
+                    title: "total"
+                },
+                legend: {
+                    cursor: "pointer",
+                    verticalAlign: "top",
+                    fontSize: 22,
+                    fontColor: "dimGrey",
+                    itemclick: toggleDataSeries
+                },
+                data: [
+                    {
+                        type: "line",
+                        xValueType: "dateTime",
+                        lineThickness: 1,
+                        xValueFormatString: "hh:mm",
+                        dataPoints: istanbulLineLogs,
+                        legendText: "Istanbul",
+                        showInLegend: true,
+                        name: "Istanbul"
+                    }, {
+                        type: "line",
+                        xValueType: "dateTime",
+                        lineThickness: 1,
+                        xValueFormatString: "hh:mm",
+                        dataPoints: londonLineLogs,
+                        legendText: "London",
+                        showInLegend: true,
+                        name: "London"
+                    }, {
+                        type: "line",
+                        xValueType: "dateTime",
+                        lineThickness: 1,
+                        xValueFormatString: "hh:mm",
+                        dataPoints: moscowLineLogs,
+                        legendText: "Moscow",
+                        showInLegend: true,
+                        name: "Moscow"
+                    }, {
+                        type: "line",
+                        xValueType: "dateTime",
+                        lineThickness: 1,
+                        xValueFormatString: "hh:mm",
+                        dataPoints: beijingLineLogs,
+                        legendText: "Beijing",
+                        showInLegend: true,
+                        name: "Beijing"
+                    }, {
+                        type: "line",
+                        xValueType: "dateTime",
+                        lineThickness: 1,
+                        xValueFormatString: "hh:mm",
+                        dataPoints: tokyoLineLogs,
+                        legendText: "Tokyo",
+                        showInLegend: true,
+                        name: "Tokyo"
+                    }
+                ]
+            });
+
+            chart.render();
+
+            var socket = new SockJS('/live-city-logs');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                stompClient.subscribe('/topic/log', function (message) {
+                    var obj = JSON.parse(message.body);
+
+                    switch (obj.city) {
+                        case "Istanbul":
+                            istanbulLogSize = istanbulLogSize + 1;
+                            break;
+                        case "Tokyo":
+                            tokyoLogSize = tokyoLogSize + 1;
+                            break;
+                        case "London":
+                            londonLogSize = londonLogSize + 1;
+                            break;
+                        case "Beijing":
+                            beijingLogSize = beijingLogSize + 1;
+                            break;
+                        case "Moscow":
+                            moscowLogSize = moscowLogSize + 1;
+                            break;
+                        default:
+                        // code block
+                    }
+                });
+            });
+            var time = new Date;
+
+            function updateChart() {
+                time.setTime(time.getTime() + updateInterval);
+                istanbulLineLogs.push({
+                    x: time.getTime(),
+                    y: istanbulLogSize
+                });
+                tokyoLineLogs.push({
+                    x: time.getTime(),
+                    y: tokyoLogSize
+                });
+
+                londonLineLogs.push({
+                    x: time.getTime(),
+                    y: londonLogSize
+                });
+                beijingLineLogs.push({
+                    x: time.getTime(),
+                    y: beijingLogSize
+                });
+                moscowLineLogs.push({
+                    x: time.getTime(),
+                    y: moscowLogSize
+                });
+
+                chart.render();
+                istanbulLogSize = 0;
+                moscowLogSize = 0;
+                londonLogSize = 0;
+                tokyoLogSize = 0;
+                beijingLogSize = 0;
+            }
+
+            updateChart();
+            setInterval(function () {
+                updateChart()
+            }, updateInterval);
+        }
+
+
+    </script>
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+</head>
+<body>
+<div id="chartContainer" style="height: 75%; width: 100%; position: absolute"></div>
+</body>
+</html>
