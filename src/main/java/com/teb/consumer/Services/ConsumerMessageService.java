@@ -1,7 +1,7 @@
 package com.teb.consumer.Services;
 
 import com.teb.consumer.Interfaces.IKafkaConstants;
-import com.teb.consumer.MongoStarter;
+import com.teb.consumer.Database.MongoStarter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

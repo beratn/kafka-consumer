@@ -1,4 +1,4 @@
-package com.teb.consumer;
+package com.teb.consumer.Database;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
