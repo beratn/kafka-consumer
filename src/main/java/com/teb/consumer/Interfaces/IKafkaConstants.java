@@ -1,7 +1,7 @@
 package com.teb.consumer.Interfaces;
 
 public interface IKafkaConstants {
-    String KAFKA_BROKERS = System.getenv().get("KAFKA_BROKER");
+    String KAFKA_BROKERS = "localhost:9092";
     Integer MESSAGE_COUNT = 1000;
     String CLIENT_ID = "client1";
     String TOPIC_NAME = "log-monitoring";
